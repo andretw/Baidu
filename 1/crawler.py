@@ -154,8 +154,8 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
         
         try:
             q = BaeTaskQueue("crawler_queue")
-            task_id = self.get_argument("task_id")
-            logging.debug("TaskInfo %s: %s" % (task_id, repr(q.getTaskInfo(task_id))))
+            task_id = int(self.get_argument("task_id"))
+            logging.debug("TaskInfo %d: %s" % (task_id, repr(q.getTaskInfo(task_id))))
         except Exception:
             logging.exception("callback error")
 
