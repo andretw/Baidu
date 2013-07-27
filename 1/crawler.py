@@ -2,6 +2,8 @@
 
 from bae.core import const
 from bae.api import logging
+from bae.api.taskqueue import BaeTaskQueueManager
+from bae.api.taskqueue import BaeTaskQueue
 
 import re
 import json
@@ -33,12 +35,7 @@ def _build_geo_index():
 
 # _build_geo_index()
 
-def _find_location(link, area):
-    text = unicode(urllib.urlopen(link).read(), 'gbk')
-
-    logging.debug("Fetched %s, type %s" % (link, type(text)))
-    # logging.debug(text)
-
+def _find_location(text, area):
     addr = area    
     for sub in locations[area]:
         match = re.search(sub, text)
@@ -81,6 +78,27 @@ def _save_news(entries):
         if con:
             con.disconnect()
 
+def _fetch_url(url):
+    # text = unicode(urllib.urlopen(url).read(), 'gbk')
+    # logging.debug("Fetched %s" % url)
+    # logging.debug(text)
+
+    # tqmgr = BaeTaskQueueManager.getInstance()
+
+    q = BaeTaskQueue("crawler_queue")
+
+    ### 推入预执行的task
+    qid = q.push(url = url)['response_params']['task_id']
+
+    ### 查看task的执行信息
+    logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
+
+    ### 查看当前queue的信息
+    # q.query()
+
+    ### 查询用户所有的queue信息
+    # tqmgr.getList()
+
 def _crawl_news(area):
     logging.debug("crawler")
     logging.info("crawler")
@@ -98,15 +116,17 @@ def _crawl_news(area):
 
     for entry in ret.entries:
         try:
-            addr, location = _find_location(entry.link, area)
+            text = _fetch_url(entry.link)
+            if text:
+                addr, location = _find_location(text, area)
 
-            entries.append({
-                "_id": entry.link,
-                "title": entry.title,
-                "description": entry.description,
-                "addr": addr,
-                "loc": location
-            })
+                entries.append({
+                    "_id": entry.link,
+                    "title": entry.title,
+                    "description": entry.description,
+                    "addr": addr,
+                    "loc": location
+                })
         except Exception:
             logging.exception("ERROR when crawl %s" % entry.link)
 
@@ -119,6 +139,14 @@ class CrawlerHandler(tornado.web.RequestHandler):
     def post(self):
         for loc in locations:
             _crawl_news(loc)
+
+class CrawlerCallbackHandler(tornado.web.RequestHandler):
+
+    def get(self):
+        logging.info("Crawler GET callback: %s" % self.request.query)
+
+    def post(self):
+        logging.info("Crawler POST callback: %s" % self.request.body)
 
 if __name__ == "__main__":
     _crawl_news(u"北京")
