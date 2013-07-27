@@ -87,7 +87,7 @@ def _save_news(area, entries, _logger):
 
 def _fetch_url(url):
     q = BaeTaskQueue("crawler_queue")
-    # q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback")
+    q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback")
 
 class CrawlerHandler(tornado.web.RequestHandler):
     def initialize(self):
