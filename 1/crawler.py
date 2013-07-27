@@ -21,7 +21,7 @@ MAP_KEY = "AD07295d48aebd5c11b10c539cd1090b"
 BAIDU_SEARCH_URL = "http://www.baidu.com/baidu"
 
 def _find_location(text, area):
-    text = text.encode("utf-8")
+    text = text.encode("gbk")
     addr = area    
     for sub in locations[area]:
         match = re.search(sub, text)
