@@ -1,0 +1,524 @@
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+html {
+  line-height: 1;
+}
+
+ol, ul {
+  list-style: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+q, blockquote {
+  quotes: none;
+}
+q:before, q:after, blockquote:before, blockquote:after {
+  content: "";
+  content: none;
+}
+
+a img {
+  border: none;
+}
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary {
+  display: block;
+}
+
+/* set up
+-------------------------------------------------- */
+html, body, form, fieldset, p, div, h1, h2, h3, h4, h5, h6 {
+  -webkit-text-size-adjust: none;
+}
+
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, Geneva, sans-serif, "Helvetica Neue";
+  font-size: 13px;
+  background-color: #FFFFFF;
+  color: #C6C6C6;
+  height: 100%;
+}
+
+a, a:visited, a:active, a:hover {
+  text-decoration: none;
+  color: #fff;
+}
+
+/* main css start
+-------------------------------------------------- */
+/* wrapper
+-------------------------------------------------- */
+#wrapper {
+  height: 100%;
+  min-width: 100%;
+  overflow: hidden;
+}
+
+/* landing page
+-------------------------------------------------- */
+.landing-page {
+  display: none;
+  position: absolute;
+  bottom: 0px;
+  top: 0px;
+  background-color: #ccc;
+  z-index: 999;
+  text-align: center;
+  background: url(../images/landing/blurbg.jpg) no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+.landing-page .logo {
+  position: relative;
+  width: 452px;
+  height: 175px;
+  margin: 0 auto;
+  top: 13%;
+  background: url(../images/landing/logo.png) no-repeat;
+}
+.landing-page .search {
+  position: relative;
+  margin: 0 auto;
+  top: 20%;
+  width: 585px;
+}
+.landing-page .search .search-btn {
+  position: absolute;
+  right: 20px;
+  top: 13px;
+  font-size: 30px;
+  color: #6bb707;
+  cursor: pointer;
+}
+.landing-page .search input {
+  width: 515px;
+  height: 51px;
+  border: 3px solid #6bb707;
+  font-size: 18px;
+  padding: 0 30px 0 30px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  -ms-border-radius: 50px;
+  -o-border-radius: 50px;
+  border-radius: 50px;
+}
+.landing-page .footer {
+  position: absolute;
+  width: 100%;
+  height: 54px;
+  bottom: 0;
+  background-color: #6bb707;
+  text-align: center;
+  border-top: 1px solid #5ed81c;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px -1px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px -1px 5px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px -1px 5px;
+}
+.landing-page .gobtn {
+  position: relative;
+  margin: 0 auto;
+  bottom: 22px;
+  width: 150px;
+  height: 79px;
+  background: url(../images/landing/gobtn.png) no-repeat;
+  cursor: pointer;
+}
+
+/* main content
+-------------------------------------------------- */
+.main-content {
+  position: absolute;
+  bottom: 0px;
+  top: 0px;
+  width: 100%;
+  min-width: 1000px;
+  overflow: hidden;
+  background-color: #000;
+}
+
+.baidu-content {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+}
+.baidu-content .instance-layer {
+  position: relative;
+  z-index: 1;
+}
+.baidu-content .instance-layer .header {
+  position: absolute;
+  width: 100%;
+  height: 54px;
+  line-height: 54px;
+  background: url(../images/maincontent/headerbg.jpg) repeat-x;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 2px;
+  z-index: 2;
+}
+.baidu-content .instance-layer .header .logo {
+  width: 84px;
+  height: 32px;
+}
+.baidu-content .instance-layer .header .logo img {
+  width: 100%;
+  margin-left: 20px;
+}
+.baidu-content .instance-layer .header .search {
+  position: absolute;
+  top: 5px;
+  right: 20px;
+}
+.baidu-content .instance-layer .header .search .search-btn {
+  position: absolute;
+  right: 20px;
+  top: -3px;
+  font-size: 13px;
+  color: #6bb707;
+  cursor: pointer;
+}
+.baidu-content .instance-layer .header .search input {
+  width: 250px;
+  height: 20px;
+  border: 1px solid #508707;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  -ms-border-radius: 50px;
+  -o-border-radius: 50px;
+  border-radius: 50px;
+  z-index: 5;
+}
+.baidu-content .instance-layer .sidebar {
+  position: absolute;
+  width: 298px;
+  top: 100px;
+  left: 50px;
+}
+.baidu-content .instance-layer .sidebar-header {
+  width: 288px;
+  height: 45px;
+  line-height: 45px;
+  color: #fff;
+  font-size: 18px;
+  padding-left: 10px;
+  background-color: #5c9c07;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 5px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 5px;
+}
+.baidu-content .instance-layer .worst {
+  width: 297px;
+  height: 163px;
+  background-color: #fff;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+}
+.baidu-content .instance-layer .worst .photo {
+  width: 144px;
+  height: 147px;
+  padding-left: 16px;
+  padding-top: 16px;
+  float: left;
+}
+.baidu-content .instance-layer .worst .photo .city-img {
+  width: 128px;
+  height: 128px;
+  background: url(../images/maincontent/city-beijing.jpg) no-repeat;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  -ms-border-radius: 100px;
+  -o-border-radius: 100px;
+  border-radius: 100px;
+}
+.baidu-content .instance-layer .worst .detail {
+  float: left;
+  width: 137px;
+  height: 163px;
+  font-size: 13px;
+}
+.baidu-content .instance-layer .worst .detail .name {
+  height: 60px;
+  line-height: 60px;
+  font-size: 24px;
+}
+.baidu-content .instance-layer .worst .detail .positive {
+  height: 25px;
+  line-height: 25px;
+  color: #999;
+}
+.baidu-content .instance-layer .worst .detail .negative {
+  height: 25px;
+  line-height: 25px;
+  color: #999;
+}
+.baidu-content .instance-layer .worst .detail .score {
+  height: 25px;
+  line-height: 25px;
+  color: #999;
+}
+.baidu-content .instance-layer .worst .detail .score .num {
+  color: #ff4605;
+}
+.baidu-content .instance-layer .sidebar-list {
+  margin-top: 10px;
+  background-color: #fff;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 5px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 0px 5px;
+}
+.baidu-content .instance-layer .sidebar-list div {
+  width: 278px;
+  padding-left: 20px;
+  height: 35px;
+  line-height: 35px;
+  border-bottom: 1px solid #eee;
+}
+.baidu-content .instance-layer .sidebar-list div:last-child {
+  border-bottom: 0;
+}
+.baidu-content .instance-layer .preview-popup {
+  position: absolute;
+  width: 367px;
+  left: 300px;
+  top: 200px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+}
+.baidu-content .instance-layer .preview-popup .photo {
+  position: relative;
+  width: 367px;
+  height: 208px;
+}
+.baidu-content .instance-layer .preview-popup .photo img {
+  width: 100%;
+}
+.baidu-content .instance-layer .preview-popup .title-bar {
+  width: 367px;
+  height: 50px;
+  background-color: #fff;
+}
+.baidu-content .instance-layer .preview-popup .title-bar .title {
+  display: inline-block;
+  width: 240px;
+  height: 50px;
+  line-height: 50px;
+  padding-left: 10px;
+}
+.baidu-content .instance-layer .preview-popup .title-bar .positive {
+  float: right;
+  display: inline-block;
+  margin-right: 15px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  color: #69b407;
+  cursor: pointer;
+}
+.baidu-content .instance-layer .preview-popup .title-bar .negative {
+  float: right;
+  display: inline-block;
+  margin-right: 15px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  color: #ff4605;
+  cursor: pointer;
+}
+.baidu-content .instance-layer .preview-popup .summary {
+  width: 347px;
+  height: 50px;
+  line-height: 50px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: #eee;
+  color: #666;
+  font-size: 13px;
+}
+.baidu-content .instance-layer .preview-popup .arrow-color-top {
+  position: absolute;
+  left: 176px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #eee;
+  border-bottom: 0;
+}
+.baidu-content .instance-layer .preview-popup .arrow-color-bottom {
+  position: absolute;
+  left: 174px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #ccc;
+  border-top-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 0;
+}
+.baidu-content .instance-layer .detail-popup {
+  position: absolute;
+  width: 650px;
+  height: 550px;
+  left: 500px;
+  top: 70px;
+  background-color: #fff;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+}
+.baidu-content .instance-layer .detail-popup .title-bar {
+  width: 650px;
+  height: 80px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 5px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 5px;
+}
+.baidu-content .instance-layer .detail-popup .title-bar .title {
+  width: 480px;
+  height: 80px;
+  line-height: 80px;
+  font-size: 24px;
+  padding-left: 20px;
+  float: left;
+}
+.baidu-content .instance-layer .detail-popup .positive {
+  float: right;
+  display: inline-block;
+  margin-right: 20px;
+  height: 80px;
+  line-height: 80px;
+  text-align: center;
+  color: #69b407;
+  cursor: pointer;
+}
+.baidu-content .instance-layer .detail-popup .negative {
+  float: right;
+  display: inline-block;
+  margin-right: 20px;
+  height: 80px;
+  line-height: 80px;
+  text-align: center;
+  color: #ff4605;
+  cursor: pointer;
+}
+.baidu-content .instance-layer .detail-popup .write-comment {
+  float: right;
+  display: inline-block;
+  margin-right: 20px;
+  height: 80px;
+  line-height: 80px;
+  text-align: center;
+  color: #ccc;
+  cursor: pointer;
+}
+.baidu-content .instance-layer .detail-popup .arrow-color-top {
+  position: absolute;
+  left: 320px;
+  bottom: -6px;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #fff;
+  border-bottom: 0;
+}
+.baidu-content .instance-layer .detail-popup .arrow-color-bottom {
+  position: absolute;
+  left: 318px;
+  bottom: -8px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid #ccc;
+  border-top-color: rgba(0, 0, 0, 0.2);
+  border-bottom: 0;
+}
+.baidu-content .instance-layer .detail-popup .detail-content {
+  width: 600px;
+  height: 445px;
+  margin: 0 25px 0 25px;
+  overflow-x: hidden;
+}
+.baidu-content .instance-layer .detail-popup .detail-content .news {
+  height: 200px;
+  background-color: #eee;
+}
+.baidu-content .instance-layer .detail-popup .detail-content .user-comment-title {
+  width: 600px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 18px;
+  margin-top: 10px;
+  border-bottom: 1px solid #ccc;
+}
+.baidu-content .instance-layer .detail-popup .detail-content .user-comment {
+  margin-top: 20px;
+}
+.baidu-content .instance-layer .detail-popup .detail-content .user-comment .photo {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  border: 1px solid #bbb;
+}
+.baidu-content .instance-layer .detail-popup .detail-content .user-comment .photo img {
+  width: 100%;
+}
+.baidu-content .instance-layer .detail-popup .detail-content .user-comment .comment {
+  display: inline-block;
+  width: 524px;
+  padding: 1px 10px 1px 0;
+  margin-left: 10px;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+.baidu-content .baidu-map {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #eee;
+  background: url(../images/maincontent/fake-map.jpg) no-repeat;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.clear-float {
+  clear: both;
+}
