@@ -120,7 +120,8 @@ class CrawlerHandler(tornado.web.RequestHandler):
         q = BaeTaskQueue("crawler_queue")
 
         ### 推入预执行的task
-        q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback?area="+area)['response_params']['task_id']
+        task = q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback?area="+area)
+        task['response_params']['area'] = area
 
         ### 查看task的执行信息
         # logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
@@ -144,10 +145,11 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
             logging.info("Crawler POST callback: %s" % task_id)
             area = self.get_argument("area")
             task_info = q.getTaskInfo(task_id)
-            for _i in task_info:
-                if _i != "response_params":
-                    logging.debug("task_info[%s] = %s" % (task_id, repr(task_info[_i])))
-            text = task_info["response_params"]["result_data"]
+            response_params = task_info["response_params"]
+            for _i in response_params:
+                if _i != "result_data":
+                    logging.debug("response_params[%s] = %s" % (task_id, repr(response_params[_i])))
+            text = response_params["result_data"]
 
             # addr, location = _find_location(text, area)
 
