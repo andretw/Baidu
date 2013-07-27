@@ -34,8 +34,6 @@ class ApiHandler(tornado.web.RequestHandler):
                         }
                     }
                 }
-            
-            criteria = {}
 
             cursor = db.news.find()
         
