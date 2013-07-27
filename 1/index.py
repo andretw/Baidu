@@ -1,4 +1,5 @@
 import tornado.wsgi
+import logging
 
 from crawler import CrawlerHandler, CrawlerCallbackHandler
  
@@ -9,6 +10,9 @@ class MainHandler(tornado.web.RequestHandler):
         self.write("Hello, world! - Tornado\n")        
 
 class ApiHandler(tornado.web.RequestHandler):
+    def initialize(self):
+        self._logger = logging.getLogger(__class__)
+
     def get(self):
         lat1 = self.get_argument("lat1", None)
         lng1 = self.get_argument("lng1", None)
@@ -21,6 +25,8 @@ class ApiHandler(tornado.web.RequestHandler):
                 criteria = {"$within":{"$box":[[float(lng1), float(lat1)], [float(lng2), float(lat2)]]}}
 
             news_list = db.news.find(criteria)
+
+            self._logger.debug("Found news %d" % len(news_list))
 
             self.write(news_list)
 
