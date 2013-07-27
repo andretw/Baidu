@@ -35,7 +35,7 @@ class ApiHandler(tornado.web.RequestHandler):
                     }
                 }
 
-            cursor = db.news.find()
+            cursor = db.news.find(criteria)
         
             news_list = []            
             for doc in cursor:
