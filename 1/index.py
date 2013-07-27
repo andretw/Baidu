@@ -19,6 +19,8 @@ class ApiHandler(tornado.web.RequestHandler):
         lat2 = self.get_argument("lat2", None)
         lng2 = self.get_argument("lng2", None)
 
+        self._logger("(%s, %s) - (%s, %s)" % (lng1, lat1, lng2, lat2))
+        
         def _func(db):
             criteria = None
             if lat1 is not None and lng1 is not None and lat2 is not None and lng2 is not None:
