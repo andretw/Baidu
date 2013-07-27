@@ -25,12 +25,13 @@ class ApiHandler(tornado.web.RequestHandler):
         self.write("lng2="+lng2)
         
         try:
-            self._logger.info("(%s, %s) - (%s, %s)" % (lng1, lat1, lng2, lat2))
+            self._logger.info("(%s, %s) - (%s, %s)" % (float(lng1), float(lat1), float(lng2), float(lat2)))
         except Exception as ex:
             self._logger.exception("ERROR")
             self.write(ex)
 
         def _func(db):
+            self._logger.debug("FFFFFUUUUUU")
             criteria = None
             # if lat1 is not None and lng1 is not None and lat2 is not None and lng2 is not None:
             criteria = {
