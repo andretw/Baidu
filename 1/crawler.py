@@ -130,15 +130,18 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
             if doc:
                 area = doc.get("area")
 
-                addr, location = _find_location(text, area)
-                self._logger.debug("Found addr %s in %s" % (addr, url))
+                try:
+                    addr, location = _find_location(text, area)
+                    self._logger.debug("Found addr %s in %s" % (addr, url))
 
-                def _update_doc(db):
-                    db.news.update({"_id":url}, {"$set":{"addr":addr, "loc":location}})
-                    self._logger.info("Update %s with addr %s, loc %s" % (url, addr, location))
-                dao.db_action(_update_doc)
+                    def _update_doc(db):
+                        db.news.update({"_id":url}, {"$set":{"addr":addr, "loc":location}})
+                        self._logger.info("Update %s with addr %s, loc %s" % (url, addr, location))
+                    dao.db_action(_update_doc)
+                except Exception:
+                    self._logger.exception("Fail to analyze address for "+url)
             else:
-                self._logger.error("Cannot found url "+url)
+                self._logger.error("Cannot found doc for url "+url)
 
         except Exception:
             self._logger.exception("callback error")
