@@ -110,12 +110,14 @@ class CrawlerHandler(tornado.web.RequestHandler):
         def _save_entries(db):
             db.news.insert(saved_news)
             self._logger.debug("Saved %d documents" % len(saved_news))
+            self.write("Saved %d documents" % len(saved_news))
 
         dao.db_action(_save_entries)
 
     def _fetch_url(self, url):
         q = BaeTaskQueue("crawler_queue")
         q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback")
+        self.write("Queue fetch task: "+url)
 
 class CrawlerCallbackHandler(tornado.web.RequestHandler):
 
@@ -133,8 +135,8 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
             q = BaeTaskQueue("crawler_queue")
             task_info = q.getTaskInfo(task_id)
             response_params = task_info["response_params"]
-            url = response_params["task_desc"]["url"]
             self._logger.debug("response_params[%s] = %s" % (task_id, repr(response_params)))
+            url = response_params["task_desc"]["url"]
 
             def _get_doc(db):
                 return db.find_one({"_id":url})
