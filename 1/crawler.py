@@ -75,7 +75,7 @@ def _save_news(area, entries, _logger):
 
     def _save_entries(db):
         db.news.insert(saved_news)
-        _logger.debug("Saved %d documents" % len(saved_news))
+        _logger.debug("Saved %d documents %s" % (len(saved_news), repr(saved_news)))
 
     dao.db_action(_save_entries)
 
