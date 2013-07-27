@@ -1,0 +1,342 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+<meta charset="UTF-8">
+<link href="css/main.css" rel="stylesheet" media="screen">
+<!-- Bootstrap css-->
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<!-- Font Awesom css -->
+<link rel="stylesheet" href="css/font-awesome.min.css">
+<!--[if IE 7]>
+  <link rel="stylesheet" href="css/font-awesome-ie7.min.css">
+<![endif]-->
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=AD07295d48aebd5c11b10c539cd1090b"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+<script type="text/javascript" src="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.js"></script>
+<link rel="stylesheet" href="http://api.map.baidu.com/library/SearchInfoWindow/1.5/src/SearchInfoWindow_min.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="data.js"></script>
+<title>pollution</title>
+<style type="text/css">
+body, html{width: 100%;height: 100%;overflow: hidden;margin:0;}
+#allmap {margin-right: 0px;height: 100%;overflow: hidden;}
+#result {border-left:1px dotted #999;height:100%;width:0px;position:absolute;top:0px;right:0px;font-size:12px;}
+dl,dt,dd,ul,li{
+    margin:0;
+    padding:0;
+    list-style:none;
+}
+dt{
+    font-size:14px;
+    font-family:"微软雅黑";
+    font-weight:bold;
+    border-bottom:1px dotted #000;
+    padding:5px 0 5px 5px;
+    margin:5px 0;
+}
+dd{
+    padding:5px 0 0 5px;
+}
+li{
+    line-height:28px;
+}
+</style>
+
+</head>
+<body>
+	<div id="wrapper">
+		<!-- landing page -->
+		<div id="landing" class="landing-page">
+			<div class="logo"></div>
+			<div class="search">
+				<div class="search-btn">
+					<i class="icon-search"></i>
+				</div>
+				<input type="text" placeholder="">
+			</div>
+			<div class="footer">
+				<div class="gobtn"></div>
+			</div>
+		</div>
+
+		<!-- main content -->
+		<div id="maincontent" class="main-content">
+			<div id="baiducontent" class="baidu-content">
+				<div class="instance-layer">
+					<!-- header -->
+					<div class="header">
+						<div class="logo"><img src="images/maincontent/logo-white.png"></div>
+						<div class="search">
+							<div class="search-btn">
+								<i class="icon-search"></i>
+							</div>
+							<input type="text" placeholder="">
+						</div>
+					</div>
+					<!-- side bar -->
+					<div class="sidebar">
+						<div class="sidebar-header">全國綠色環境負排名</div>
+						<div class="worst">
+							<div class="photo">
+								<div class="city-img"></div>
+							</div>
+							<div class="detail">
+								<div class="name">北京市</div>
+								<div class="positive">累積正評 56</div>
+								<div class="positive">累積負評 229</div>
+								<div class="score">總和 <span class="num">-173</span></div>
+							</div>
+						</div>
+						<div class="sidebar-list">
+							<div>2. 上海   評價總合  -170</div>
+							<div>3. 上海   評價總合  -170</div>
+							<div>4. 上海   評價總合  -170</div>
+							<div>5. 上海   評價總合  -170</div>
+							<div>6. 上海   評價總合  -170</div>
+							<div>7. 上海   評價總合  -170</div>
+							<div>8. 上海   評價總合  -170</div>
+							<div>9. 上海   評價總合  -170</div>
+							<div>10. 上海   評價總合  -170</div>
+						</div>
+						<div class="clear-float"></div>
+					</div>
+				</div>
+
+				<!-- baidu map -->
+				<div id="allmap" style="overflow:hidden;zoom:1;position:relative;"> 
+				    <div id="map" style="height:100%;-webkit-transition: all 0.5s ease-in-out;transition: all 0.5s ease-in-out;"></div>
+				    <div id="panelWrap" style="width:0px;position:absolute;top:0px;right:0px;height:100%;overflow:auto;-webkit-transition: all 0.5s ease-in-out;transition: all 0.5s ease-in-out;">
+				        <div id="panelContent" style="width:200px;height:200px;margin:-100px 0 0 -10px;color:#999;position:absolute;opacity:0.5;top:50%;left:50%;">此处用于展示结果面板</div>
+				        <div id="panel" style="position:absolute;"></div>
+				    </div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+<script type="text/javascript">
+var markerClusterer = null;
+var isPanelShow = false;
+
+EXAMPLE_URL = './'
+var map = new BMap.Map("map");
+var poi = new BMap.Point(116.404, 39.915)
+map.centerAndZoom(poi , 6);
+map.enableScrollWheelZoom();
+
+// <!-- detail popup -->
+var sContent = '<div class="detail-popup"> \
+						<div class="title-bar"> \
+							<div class="title">新聞標題.......</div> \
+							<div class="negative"><i class="icon-thumbs-down-alt"> 13</i></div> \
+							<div class="positive"><i class="icon-thumbs-up-alt"></i> 66</div> \
+							<div class="write-comment"><i class="icon-comment"></i></div> \
+						</div> \
+						<div class="clear-float"></div> \
+						<div class="detail-content"> \
+							<div class="news" id="imgDemo"></div> \
+							<div class="user-comment-title">評論</div> \
+							<div class="user-comment"> \
+								<div class="photo"></div> \
+								<div class="comment">Print this page to PDF for the complete set of vectors. Or to use on the desktop, install FontAwesome.otf and copy and paste the icons (not the unicode) directly into your designs.</div> \
+							</div> \
+							<div class="user-comment"> \
+								<div class="photo"></div> \
+								<div class="comment">Print this page to PDF for the complete set of vectors. Or to use on the desktop, install FontAwesome.otf and copy and paste the icons (not the unicode) directly into your designs.</div> \
+							</div> \
+							<div class="user-comment"> \
+								<div class="photo"></div> \
+								<div class="comment">Print this page to PDF for the complete set of vectors. Or to use on the desktop, install FontAwesome.otf and copy and paste the icons (not the unicode) directly into your designs.</div> \
+							</div> \
+							<div class="user-comment"> \
+								<div class="photo"></div> \
+								<div class="comment">Print this page to PDF for the complete set of vectors. Or to use on the desktop, install FontAwesome.otf and copy and paste the icons (not the unicode) directly into your designs.</div> \
+							</div> \
+							<div class="user-comment"> \
+								<div class="photo"></div> \
+								<div class="comment">Print this page to PDF for the complete set of vectors. Or to use on the desktop, install FontAwesome.otf and copy and paste the icons (not the unicode) directly into your designs.</div> \
+							</div> \
+						</div> \
+						<div class="arrow-color-bottom"></div> \
+						<div class="arrow-color-top"></div> \
+					</div> \
+					</div>';
+// "<h4 style='margin:0 0 5px 0;padding:0.2em 0'>天安门</h4>" + 
+// "<img style='float:right;margin:4px' id='imgDemo' src='http://app.baidu.com/map/images/tiananmen.jpg' width='139' height='104' title='天安门'/>" + 
+// "<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>天安门坐落在中国北京市中心,故宫的南侧,与天安门广场隔长安街相望,是清朝皇城的大门...</p>" + 
+// "</div>";
+
+// var html = ["<div class='infoBoxContent'><div class='title'><strong>中海雅园</strong><span class='price'>均价43000</span></div>",
+// "<div class='list'><ul><li><div class='left'><img src='close.jpg'/></div><div class='left'><a target='_blank' href='http://map.baidu.com'>中海雅园南北通透四居室</a><p>4室2厅，205.00平米，3层</p></div><div class='rmb'>760万</div></li>"
+// ,"<li><div class='left'><img src='close.png'/></div><div class='left'><a target='_blank' href='http://map.baidu.com'>中海雅园四居室还带保姆间</a><p>2室1厅，112.00平米，16层</p></div><div class='rmb'>300万</div></li>"
+// ,"<li><div class='left'><img src='close.png'/></div><div class='left'><a target='_blank' href='http://map.baidu.com'>《有钥匙 随时看》花园水系</a><p>3室2厅，241.00平米，16层</p></div><div class='rmb'>400万</div></li>"
+// ,"<li><div class='left'><img src='close.png'/></div><div class='left'><a target='_blank' href='http://map.baidu.com'>富力城D区正规楼王大三居</a><p>3室3厅，241.00平米，17层</p></div><div class='rmb'>600万</div></li>"
+// ,"<li class='last'><div class='left'><img src='close.png'/></div><div class='left'><a target='_blank' href='http://map.baidu.com'>富力城豪，身份人士的象征</a><p>4室2厅，213.90平米，25层</p></div><div class='rmb'>700万</div></li>"
+// ,"</ul></div>"
+// ,"</div>"];
+
+
+// var content = '<div style="margin:0;line-height:20px;padding:2px;">' +
+//                 '<img src="../img/baidu.jpg" alt="" style="float:right;zoom:1;overflow:hidden;width:100px;height:100px;margin-left:3px;"/>' +
+//                 '地址：北京市海淀区上地十街10号<br/>电话：(010)59928888<br/>简介：百度大厦位于北京市海淀区西二旗地铁站附近，为百度公司综合研发及办公总部。' +
+//               '</div>';
+
+// var searchInfoWindow = null;
+// searchInfoWindow = new BMapLib.SearchInfoWindow(map, content, {
+// 		title  : "百度大厦",      //标题
+// 		width  : 290,             //宽度
+// 		height : 105,              //高度
+// 		panel  : "panel",         //检索结果面板
+// 		enableAutoPan : true,     //自动平移
+// 		searchTypes   :[
+// 			BMAPLIB_TAB_SEARCH,   //周边检索
+// 			BMAPLIB_TAB_TO_HERE,  //到这里去
+// 			BMAPLIB_TAB_FROM_HERE //从这里出发
+// 		]
+// 	});
+
+map.addControl(new BMap.NavigationControl());  //添加默认缩放平移控件
+//map.addControl(new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_RIGHT, type: BMAP_NAVIGATION_CONTROL_SMALL}));  //右上角，仅包含平移和缩放按钮
+//map.addControl(new BMap.NavigationControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT, type: BMAP_NAVIGATION_CONTROL_PAN}));  //左下角，仅包含平移按钮
+//map.addControl(new BMap.NavigationControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT, type: BMAP_NAVIGATION_CONTROL_ZOOM}));  //右下角，仅包含缩放按钮
+
+var MAX = 20;
+var markers = [];
+var pt = null;
+var i = 0;
+
+var styles = [{
+        url: EXAMPLE_URL + 'images/heart30.png',
+        size: new BMap.Size(30, 26),
+        opt_anchor: [16, 0],
+        //textColor: '#ff00ff',
+        opt_textSize: 32
+    }];
+
+
+// var infoBoxTemp = null;
+// function showInfoBox(marker){
+// 	console.log('showInfoBox'+ infoBoxTemp);
+// 	var infoBox = new BMapLib.InfoBox(map, html);
+// 	if(infoBoxTemp){
+// 		infoBoxTemp.close();
+// 	}
+// 	infoBoxTemp = infoBox;
+// 	console.log(marker);
+// 	infoBox.open(marker);
+// }
+
+data = getData(getViewRange());
+for (; i < data.length; i++) {
+	pt = new BMap.Point(data[i].loc[0], data[i].loc[1]);
+	var marker = new BMap.Marker(pt)
+	var infoWindow = new BMap.InfoWindow(sContent);
+	// var infoBox = new BMapLib.InfoBox(map, html.join(""), {
+	// 	boxStyle:{
+	// 		background:"url('tipbox.gif') no-repeat center top"
+	// 		,width: "270px"
+	// 		,height: "300px"
+	// 	}
+	// 	,closeIconMargin: "1px 1px 0 0"
+	// 	,enableAutoPan: true
+	// 	,align: INFOBOX_AT_BOTTOM
+	// 	,offset: new BMap.Size(25,25)
+	// });
+
+	//console.log(marker);
+	marker.addEventListener("click", function(e){
+	   this.openInfoWindow(infoWindow);
+	   //redraw infowindow after loaded
+	   document.getElementById('imgDemo').onload = function (){
+	       infoWindow.redraw();   //防止在网速较慢，图片未加载时，生成的信息框高度比图片的总高度小，导致图片部分被隐藏
+	   }
+	});
+	markers.push(marker);
+}
+
+//added markers into markerClusterer
+markerClusterer = new BMapLib.MarkerClusterer(map, {markers:markers});
+console.log(markerClusterer.getClustersCount());
+console.log(markerClusterer.isAverageCenter());
+// markerClusterer.addEventListener("click", function(e){
+// 	console.log('nono');
+// });
+markerClusterer.setMaxZoom(12);
+t = markerClusterer.getMap();
+console.log(t);
+addEventListerForNewMarkers();
+//console.log(t.rc);
+// t.addEventListener('click', function(){
+// 	console.log("add do nothing event listener");
+// 	return;
+// });
+
+map.addEventListener("click", function(){
+	console.log('do nothing la');
+});
+
+map.addEventListener("zoomend", function(){
+	addEventListerForNewMarkers();
+	getData(getViewRange());
+});
+
+function getViewRange(){
+	var bs = map.getBounds();
+	var bssw = bs.getSouthWest(); //bottom-left
+	var bsne = bs.getNorthEast(); //top-right
+	console.log("view range：" + bssw.lng + "," + bssw.lat + " to " + bsne.lng + "," + bsne.lat);
+	return [bssw.lng, bssw.lat, bsne.lng, bsne.lat];
+}
+
+function getData(arr){
+	console.log('lng1='+arr[0]+'&lat1='+arr[1]+'&lng2='+arr[2]+'&lat2='+arr[3]);
+	return d;
+	//$('#panelContent').html(d);
+
+	// $.get('http://ecomap.duapp.com/api?lng1='+arr[0]+'&lat1='+arr[1]+'&lng2='+arr[2]+'&lat2='+arr[3], function(data) {
+		// $('.result').html(data);
+	// });
+}
+
+function addEventListerForNewMarkers(){
+	console.log('markerClusterer.getMap():');
+	var tmp = markerClusterer.getMap();
+	console.log(tmp);
+	var new_markers = tmp.rc;
+	console.log(new_markers);
+	for(i=0; i<new_markers.length; i++){
+		console.log("add do nothing event listener");
+		console.log(new_markers[i]);
+		new_markers[i].addEventListener( "mouseover", function(e){
+			togglePanel();	
+		});
+		new_markers[i].addEventListener( "mouseout", function(e){
+			togglePanel();	
+		});
+	}
+}
+
+function getE(id){
+    return document.getElementById(id);
+}
+
+function togglePanel(){
+    if (isPanelShow == false) {
+        isPanelShow = true;
+        getE("panelWrap").style.width = "40%";
+        getE("map").style.marginRight = "40%";
+    } else {
+        isPanelShow = false;
+        getE("panelWrap").style.width = "0px";
+        getE("map").style.marginRight = "0px";
+    }
+}
+</script>
+
+</body>
+</html>
