@@ -97,8 +97,15 @@ class CrawlerHandler(tornado.web.RequestHandler):
         self.post()
 
     def post(self):
-        for area in [ u"北京", u"河北" ]:
+        url = self.get_argument("url", None)
+        area = self.get_argument("area", None)
+        if url:
+            _fetch_url(url)
+        elif area:
             _crawl_news(area, self._logger)
+        else:
+            for area in [ u"北京", u"河北" ]:
+                _crawl_news(area, self._logger)
 
 class CrawlerCallbackHandler(tornado.web.RequestHandler):
 
