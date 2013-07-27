@@ -142,7 +142,7 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
             url = task_desc["url"]
 
             def _get_doc(db):
-                return db.find_one({"_id":url})
+                return db.news.find_one({"_id":url})
 
             doc = dao.db_action(_get_doc)
 
