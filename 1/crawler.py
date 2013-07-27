@@ -152,9 +152,12 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
     def post(self):
         logging.info("Crawler POST callback: %s" % self.request.body)
         
-        q = BaeTaskQueue("crawler_queue")
-        task_id = self.get_argument("task_id")
-        logging.debug("TaskInfo %s: %s" % (task_id, repr(q.getTaskInfo(task_id))))
+        try:
+            q = BaeTaskQueue("crawler_queue")
+        	task_id = self.get_argument("task_id")
+        	logging.debug("TaskInfo %s: %s" % (task_id, repr(q.getTaskInfo(task_id))))
+        except Exception:
+            logging.exception("callback error")
 
 if __name__ == "__main__":
     _crawl_news(u"北京")
