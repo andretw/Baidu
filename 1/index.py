@@ -1,6 +1,7 @@
 import json
 
 import tornado.wsgi
+from tornado.web import StaticFileHandler
 from bae.api import logging
 
 from crawler import CrawlerHandler, CrawlerCallbackHandler
@@ -50,10 +51,11 @@ class ApiHandler(tornado.web.RequestHandler):
 
 
 app = tornado.wsgi.WSGIApplication([
-    (r"/", MainHandler),
     (r"/api", ApiHandler),
     (r"/crawler/callback", CrawlerCallbackHandler),
-    (r"/crawler", CrawlerHandler)
+    (r"/crawler", CrawlerHandler),
+
+    (r"^.*$", StaticFileHandler, {"path": "/static" })
 ])
  
 from bae.core.wsgi import WSGIApplication
