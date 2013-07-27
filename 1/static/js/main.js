@@ -29,4 +29,5 @@ function _resizeHandler()
 	browserHeight = win.height(); 
 	browserRatio = browserHeight / browserWidth;
 	landing.css({ "width":browserWidth, "height":browserHeight });
+	$("#multi-preview-popup").css({ "height":browserHeight });
 }

@@ -233,7 +233,7 @@ a, a:visited, a:active, a:hover {
   position: absolute;
   width: 298px;
   top: 100px;
-  left: 50px;
+  left: 80px;
 }
 .baidu-content .instance-layer .sidebar-header {
   width: 288px;
@@ -259,18 +259,18 @@ a, a:visited, a:active, a:hover {
   width: 144px;
   height: 147px;
   padding-left: 16px;
-  padding-top: 16px;
+  padding-top: 13px;
   float: left;
 }
 .baidu-content .instance-layer .worst .photo .city-img {
   width: 128px;
   height: 128px;
-  background: url(../images/maincontent/city-beijing.jpg) no-repeat;
   -webkit-border-radius: 100px;
   -moz-border-radius: 100px;
   -ms-border-radius: 100px;
   -o-border-radius: 100px;
   border-radius: 100px;
+  border: 3px solid #2e4a09;
 }
 .baidu-content .instance-layer .worst .detail {
   float: left;
@@ -319,6 +319,7 @@ a, a:visited, a:active, a:hover {
   border-bottom: 0;
 }
 .baidu-content .instance-layer .preview-popup {
+  display: none;
   position: absolute;
   width: 367px;
   left: 300px;
@@ -398,7 +399,7 @@ a, a:visited, a:active, a:hover {
   position: absolute;
   width: 650px;
   height: 550px;
-  left: 500px;
+  left: 380px;
   top: 70px;
   background-color: #fff;
   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
@@ -501,11 +502,69 @@ a, a:visited, a:active, a:hover {
 }
 .baidu-content .instance-layer .detail-popup .detail-content .user-comment .comment {
   display: inline-block;
-  width: 524px;
+  width: 505px;
   padding: 1px 10px 1px 0;
   margin-left: 10px;
   word-wrap: break-word;
   word-break: break-all;
+}
+.baidu-content .instance-layer .multi-preview-popup {
+  position: absolute;
+  width: 367px;
+  height: 800px;
+  right: 0;
+  background-color: #fff;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+  box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
+  overflow-x: hidden;
+}
+.baidu-content .instance-layer .multi-preview-popup .photo {
+  position: relative;
+  width: 367px;
+  height: 208px;
+}
+.baidu-content .instance-layer .multi-preview-popup .photo img {
+  width: 100%;
+}
+.baidu-content .instance-layer .multi-preview-popup .title-bar {
+  width: 367px;
+  height: 50px;
+  background-color: #fff;
+}
+.baidu-content .instance-layer .multi-preview-popup .title-bar .title {
+  display: inline-block;
+  width: 240px;
+  height: 50px;
+  line-height: 50px;
+  padding-left: 10px;
+}
+.baidu-content .instance-layer .multi-preview-popup .title-bar .positive {
+  float: right;
+  display: inline-block;
+  margin-right: 15px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  color: #69b407;
+  cursor: pointer;
+}
+.baidu-content .instance-layer .multi-preview-popup .title-bar .negative {
+  float: right;
+  display: inline-block;
+  margin-right: 20px;
+  height: 50px;
+  line-height: 50px;
+  text-align: center;
+  color: #ff4605;
+  cursor: pointer;
+}
+.baidu-content .instance-layer .multi-preview-popup .summary {
+  width: 347px;
+  padding: 0 10px 10px 10px;
+  color: #999;
+  font-size: 13px;
+  border-bottom: 1px solid #eee;
 }
 .baidu-content .baidu-map {
   position: relative;
