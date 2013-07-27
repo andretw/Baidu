@@ -78,13 +78,67 @@ def _save_news(entries):
         if con:
             con.disconnect()
 
-  class CrawlerHandler(tornado.web.RequestHandler):
+def _fetch_url(url):
+    # text = unicode(urllib.urlopen(url).read(), 'gbk')
+    # logging.debug("Fetched %s" % url)
+    # logging.debug(text)
+
+    # tqmgr = BaeTaskQueueManager.getInstance()
+
+    q = BaeTaskQueue("crawler_queue")
+
+    ### 推入预执行的task
+    qid = q.push(url = url)['response_params']['task_id']
+
+    ### 查看task的执行信息
+    # logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
+
+    ### 查看当前queue的信息
+    # q.query()
+
+    ### 查询用户所有的queue信息
+    # tqmgr.getList()
+
+def _crawl_news(area):
+    logging.debug("crawler")
+    logging.info("crawler")
+    entries = []
+    try:
+        area_query = quote(area.encode('gbk'))
+        rss_url = "http://news.baidu.com/ns?word="+ area_query +"%2B%CE%DB%C8%BE&tn=newsrss&sr=0&cl=2&rn=20&ct=0"
+        logging.debug("rss_url: " + rss_url)
+        ret = feedparser.parse(rss_url) 
+
+        logging.debug("Found %d entries" % len(ret.entries))
+    except:
+        logging.exception('ERROR when reading rss')
+        return
+
+    for entry in ret.entries:
+        try:
+            text = _fetch_url(entry.link)
+            if text:
+                addr, location = _find_location(text, area)
+
+                entries.append({
+                    "_id": entry.link,
+                    "title": entry.title,
+                    "description": entry.description,
+                    "addr": addr,
+                    "loc": location
+                })
+        except Exception:
+            logging.exception("ERROR when crawl %s" % entry.link)
+
+    _save_news(entries)    
+
+class CrawlerHandler(tornado.web.RequestHandler):
     def get(self):
         self.post()
 
     def post(self):
         for loc in [ u"北京", u"河北" ]:
-            _crawl_news(loc, self)
+            _crawl_news(loc)
 
 class CrawlerCallbackHandler(tornado.web.RequestHandler):
 
