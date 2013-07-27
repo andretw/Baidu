@@ -11,7 +11,7 @@ class MainHandler(tornado.web.RequestHandler):
 
 class ApiHandler(tornado.web.RequestHandler):
     def initialize(self):
-        self._logger = logging.getLogger(__name__)
+        self._logger = logging.getLogger("api")
 
     def get(self):
         lat1 = self.get_argument("lat1", None)
