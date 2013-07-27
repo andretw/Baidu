@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from bae.core import const
 from bae.api import logging
 
@@ -5,21 +7,25 @@ import json
 import tornado.web
 import feedparser
 import pymongo
+from urllib import quote
+
+from loc_keywords import locations
 
 BAIDU_SEARCH_URL = "http://www.baidu.com/baidu"
 
-def crawl_news():
+def crawl_news(loc):
     logging.debug("crawler")
     logging.info("crawler")
     con = None
     try:
-        ret = feedparser.parse("http://news.baidu.com/ns?word=%CE%DB%C8%BE&tn=newsrss&sr=0&cl=2&rn=20&ct=0") 
+        loc_query = quote(loc.encode("gbk"))
+        rss_url = "http://news.baidu.com/ns?word="+ loc_query +"%2B%CE%DB%C8%BE&tn=newsrss&sr=0&cl=2&rn=20&ct=0"
+        logging.debug("rss_url: " + rss_url)
+        ret = feedparser.parse(rss_url) 
 
         db_name = 'ZwgmbiQSlqOsjZWOKIOJ'
         con = pymongo.Connection(host = const.MONGO_HOST, port = int(const.MONGO_PORT))
         db = con[db_name]
-
-        logging.debug("const %s" % repr(const))
 
         if const.MONGO_USER:
             db.authenticate(const.MONGO_USER, const.MONGO_PASS)
@@ -31,7 +37,8 @@ def crawl_news():
             news.insert({
                 "_id": entry.link,
                 "title": entry.title,
-                "description": entry.description
+                "description": entry.description,
+                "loc": loc
             })
     except:
         logging.exception('ERROR when crawl')
@@ -44,7 +51,8 @@ class CrawlerHandler(tornado.web.RequestHandler):
         self.post()
 
     def post(self):
-        crawl_news()
+        for loc in locations:
+            crawl_news(loc)
 
 if __name__ == "__main__":
-    crawl_news()
+    crawl_news(u"北京")
