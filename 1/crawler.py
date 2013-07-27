@@ -15,7 +15,7 @@ def crawl_news():
     try:
         ret = feedparser.parse("http://news.baidu.com/ns?word=%CE%DB%C8%BE&tn=newsrss&sr=0&cl=2&rn=20&ct=0") 
 
-        db_name = 'ecomap'
+        db_name = 'ZwgmbiQSlqOsjZWOKIOJ'
         con = pymongo.Connection(host = const.MONGO_HOST, port = int(const.MONGO_PORT))
         db = con[db_name]
 
