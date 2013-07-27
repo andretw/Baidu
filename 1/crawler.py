@@ -91,7 +91,7 @@ def _fetch_url(url):
     qid = q.push(url = url)['response_params']['task_id']
 
     ### 查看task的执行信息
-    logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
+    # logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
 
     ### 查看当前queue的信息
     # q.query()
