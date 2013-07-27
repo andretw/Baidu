@@ -1,7 +1,7 @@
 import json
 
 import tornado.wsgi
-from tornado.web import StaticFileHandler
+from tornado.web import StaticFileHandler, RedirectHandler
 from bae.api import logging
 from bae.core import const
 
@@ -51,6 +51,7 @@ app = tornado.wsgi.WSGIApplication([
     (r"/api", ApiHandler),
     (r"/crawler/callback", CrawlerCallbackHandler),
     (r"/crawler", CrawlerHandler),
+    (r"/", RedirectHandler, {"url": "/index.html"}),
     (r"^/(.*)$", StaticFileHandler, {"path": const.APP_DIR+"/static" })
 ])
  
