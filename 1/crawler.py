@@ -132,9 +132,7 @@ class CrawlerHandler(tornado.web.RequestHandler):
         q = BaeTaskQueue("crawler_queue")
 
         ### 推入预执行的task
-        self.write("Add queue task for "+url)
         qid = q.push(url = url)['response_params']['task_id']
-        self.write("After queue task added for "+url)
 
         ### 查看task的执行信息
         # logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
@@ -153,6 +151,10 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
 
     def post(self):
         logging.info("Crawler POST callback: %s" % self.request.body)
+        
+        q = BaeTaskQueue("crawler_queue")
+        task_id = self.get_argument("task_id")
+        logging.debug("TaskInfo %s: %s" % (task_id, repr(q.getTaskInfo(task_id))))
 
 if __name__ == "__main__":
     _crawl_news(u"北京")
