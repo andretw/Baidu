@@ -48,7 +48,7 @@ class ApiHandler(tornado.web.RequestHandler):
                 # self._logger.info("Found doc %s" % repr(doc))
                 news_list.append(doc)
 
-            self.write([])
+            self.write(repr(news_list))
 
         dao.db_action(_func)
 
