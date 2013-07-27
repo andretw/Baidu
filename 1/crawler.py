@@ -40,27 +40,48 @@ def _find_location(text, area):
 
     return addr, location
 
-def _save_news(entries):
+def _crawl_news(area, _logger):
+    try:
+        area_query = quote(area.encode('gbk'))
+        rss_url = "http://news.baidu.com/ns?word="+ area_query +"%2B%CE%DB%C8%BE&tn=newsrss&sr=0&cl=2&rn=20&ct=0"
+        _logger.debug("rss_url: " + rss_url)
+        ret = feedparser.parse(rss_url) 
+
+        _logger.debug("Found %d entries" % len(ret.entries))
+
+        _save_news(area, ret.entries, _logger)   
+    except:
+        _logger.exception('ERROR when reading rss')
+        return
+
+    for entry in ret.entries:
+        try:
+            _fetch_url(entry.link)
+        except Exception:
+            _logger.exception("ERROR when crawl %s" % entry.link)
+
+def _save_news(area, entries, _logger):
     if not entries:
         return
-    try:
-        db_name = 'ZwgmbiQSlqOsjZWOKIOJ'
-        con = pymongo.Connection(host = const.MONGO_HOST, port = int(const.MONGO_PORT))
-        db = con[db_name]
 
-        if const.MONGO_USER:
-            db.authenticate(const.MONGO_USER, const.MONGO_PASS)
-        news = db.news
+    saved_news = []
+    for entry in entries:
+        saved_news.append({
+            "_id": entry.link,
+            "title": entry.title,
+            "description": entry.description,
+            "area": area
+        })
 
-        news.insert(entries)
+    def _save_entries(db):
+        db.news.insert(saved_news)
+        _logger.debug("Saved %d documents" % len(saved_news))
 
-        logging.debug("Saved %d documents" % len(entries))
-    except:
-        logging.exception('ERROR when save into mongodb')
-    finally:
-        if con:
-            con.disconnect()
+    dao.db_action(_save_entries)
 
+def _fetch_url(url):
+    q = BaeTaskQueue("crawler_queue")
+    # q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback")
 
 class CrawlerHandler(tornado.web.RequestHandler):
     def initialize(self):
@@ -71,53 +92,7 @@ class CrawlerHandler(tornado.web.RequestHandler):
 
     def post(self):
         for area in [ u"北京", u"河北" ]:
-            self._crawl_news(area)
-
-    def _crawl_news(self, area):
-        try:
-            area_query = quote(area.encode('gbk'))
-            rss_url = "http://news.baidu.com/ns?word="+ area_query +"%2B%CE%DB%C8%BE&tn=newsrss&sr=0&cl=2&rn=20&ct=0"
-            self._logger.debug("rss_url: " + rss_url)
-            ret = feedparser.parse(rss_url) 
-
-            self._logger.debug("Found %d entries" % len(ret.entries))
-            self.write("Found %d entries for %s" % (len(ret.entries),area))
-
-            self._save_news(area, ret.entries)   
-        except:
-            self._logger.exception('ERROR when reading rss')
-            return
-
-        for entry in ret.entries:
-            try:
-                self._fetch_url(entry.link)
-            except Exception:
-                self._logger.exception("ERROR when crawl %s" % entry.link)
-
-    def _save_news(self, area, entries):
-        if not entries:
-            return
-
-        saved_news = []
-        for entry in entries:
-            saved_news.append({
-                "_id": entry.link,
-                "title": entry.title,
-                "description": entry.description,
-                "area": area
-            })
-
-        def _save_entries(db):
-            db.news.insert(saved_news)
-            self._logger.debug("Saved %d documents" % len(saved_news))
-            self.write("Saved %d documents" % len(saved_news))
-
-        dao.db_action(_save_entries)
-
-    def _fetch_url(self, url):
-        q = BaeTaskQueue("crawler_queue")
-        q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback")
-        self.write("Queue fetch task: "+url)
+            _crawl_news(area, self._logger)
 
 class CrawlerCallbackHandler(tornado.web.RequestHandler):
 
@@ -163,5 +138,4 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
             self._logger.exception("callback error")
 
 if __name__ == "__main__":
-    _crawl_news(u"北京")
-    _crawl_news(u"河北")
+    _crawl_news(u"北京", logging.getLogger("main"))
