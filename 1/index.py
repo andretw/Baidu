@@ -37,6 +37,7 @@ class ApiHandler(tornado.web.RequestHandler):
         
             news_list = []            
             for doc in cursor:
+                self._logger.info("Found doc %s" % repr(doc))
                 news_list.append(doc)
 
             self.write(news_list)
