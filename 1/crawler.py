@@ -43,8 +43,6 @@ def _find_location(text, area):
             addr = addr + sub
             break
 
-    logging.debug("addr -> %s" % addr)
-
     q = {"address": addr.encode("utf-8")}
     map_api = "http://api.map.baidu.com/geocoder/v2/?output=json&ak=%s&%s" % (MAP_KEY, urlencode(q))
     response = urllib.urlopen(map_api).read()    
@@ -122,7 +120,7 @@ class CrawlerHandler(tornado.web.RequestHandler):
         q = BaeTaskQueue("crawler_queue")
 
         ### 推入预执行的task
-        qid = q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback?area="+area)['response_params']['task_id']
+        q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback?area="+area)['response_params']['task_id']
 
         ### 查看task的执行信息
         # logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
@@ -140,22 +138,28 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
         logging.info("Crawler GET callback: %s" % self.request.query)
 
     def post(self):
-        logging.info("Crawler POST callback: %s" % self.request.body)
-        
         try:
             q = BaeTaskQueue("crawler_queue")
             task_id = int(self.get_argument("task_id"))
+            logging.info("Crawler POST callback: %s" % task_id)
+            area = self.get_argument("area")
             task_info = q.getTaskInfo(task_id)
+            for _i in task_info:
+                if _i != "response_params":
+                    logging.debug("task_info[%s] = %s" % (task_id, repr(task_info[_i])))
             text = task_info["response_params"]["result_data"]
-            addr, location = _find_location(text, area)
 
-            entries.append({
-                "_id": entry.link,
-                "title": entry.title,
-                "description": entry.description,
-                "addr": addr,
-                "loc": location
-            })
+            # addr, location = _find_location(text, area)
+
+            # logging.debug("Found addr %s in %s" % (addr))
+
+            # entries.append({
+            #     "_id": entry.link,
+            #     "title": entry.title,
+            #     "description": entry.description,
+            #     "addr": addr,
+            #     "loc": location
+            # })
         except Exception:
             logging.exception("callback error")
 
