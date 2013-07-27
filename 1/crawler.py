@@ -1,6 +1,7 @@
 from bae.core import const
 from bae.api import logging
 
+import json
 import tornado.web
 import feedparser
 import pymongo
@@ -8,6 +9,8 @@ import pymongo
 BAIDU_SEARCH_URL = "http://www.baidu.com/baidu"
 
 def crawl_news():
+    logging.debug("crawler")
+    logging.info("crawler")
     con = None
     try:
         ret = feedparser.parse("http://news.baidu.com/ns?word=%CE%DB%C8%BE&tn=newsrss&sr=0&cl=2&rn=20&ct=0") 
@@ -16,11 +19,13 @@ def crawl_news():
         con = pymongo.Connection(host = const.MONGO_HOST, port = int(const.MONGO_PORT))
         db = con[db_name]
 
-        logging.debug("MONGO %s / %s" % (const.MONGO_USER, const.MONGO_PASS))
+        logging.debug("const %s" % json.dumps(const))
 
         if const.MONGO_USER:
             db.authenticate(const.MONGO_USER, const.MONGO_PASS)
         news = db.news
+
+        logging.debug("Found %d entries" % len(ret.entries))
 
         for entry in ret.entries:
             news.insert({
