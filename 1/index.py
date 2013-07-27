@@ -51,7 +51,7 @@ app = tornado.wsgi.WSGIApplication([
     (r"/api", ApiHandler),
     (r"/crawler/callback", CrawlerCallbackHandler),
     (r"/crawler", CrawlerHandler),
-    (r"^/.*$", StaticFileHandler, {"path": const.APP_DIR+"/static" })
+    (r"^/(.*)$", StaticFileHandler, {"path": const.APP_DIR+"/static" })
 ])
  
 from bae.core.wsgi import WSGIApplication
