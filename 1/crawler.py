@@ -19,7 +19,7 @@ def crawl_news():
         con = pymongo.Connection(host = const.MONGO_HOST, port = int(const.MONGO_PORT))
         db = con[db_name]
 
-        logging.debug("const %s" % json.dumps(const))
+        logging.debug("const %s" % repr(const))
 
         if const.MONGO_USER:
             db.authenticate(const.MONGO_USER, const.MONGO_PASS)
