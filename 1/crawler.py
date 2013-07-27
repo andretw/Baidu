@@ -66,18 +66,24 @@ def _save_news(area, entries, _logger):
 
     saved_news = []
     for entry in entries:
-        saved_news.append({
+        news = {
             "_id": entry.link,
             "title": entry.title,
             "description": entry.description,
             "area": area
-        })
+        }
+        saved_news.append(news)
 
-    def _save_entries(db):
-        db.news.insert(saved_news)
-        _logger.debug("Saved %d documents %s" % (len(saved_news), repr(saved_news)))
+        def _save_entries(db):
+            db.news.insert(news)
+            _logger.debug("Saved %s" % entry.link)
+        dao.db_action(_save_entries)
 
-    dao.db_action(_save_entries)
+    # def _save_entries(db):
+    #     db.news.insert(saved_news)
+    #     _logger.debug("Saved %d documents %s" % (len(saved_news), repr(saved_news)))
+
+    # dao.db_action(_save_entries)
 
 def _fetch_url(url):
     q = BaeTaskQueue("crawler_queue")
