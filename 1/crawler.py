@@ -26,7 +26,7 @@ def _find_location(text, area, _logger):
     _logger.debug(text[1000:1100])
     addr = area    
     for sub in locations[area]:
-        match = re.search(quote(sub), text)
+        match = re.search(quote(sub.encode("gbk")), text)
         if match:
             addr = addr + sub
             break
