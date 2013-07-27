@@ -33,6 +33,7 @@ class ApiHandler(tornado.web.RequestHandler):
                     }
                 }
 
+            self._logger.debug("Criteria %s" % repr(criteria))
             cursor = db.news.find(criteria)
         
             news_list = []            
