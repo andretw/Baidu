@@ -12,7 +12,7 @@ import tornado.web
 import pymongo
 
 import feedparser
-from loc_keywords import locations
+from loc import locations
 
 MAP_KEY = "AD07295d48aebd5c11b10c539cd1090b"
 
@@ -31,27 +31,27 @@ def _build_geo_index():
         if con:
             con.disconnect()
 
-def find_detail_loc(link, area):
-    text = urllib.urlopen(link).read()
+# _build_geo_index()
 
-    logging.debug("Fetched %s" % link)
+def _find_location(link, area):
+    text = unicode(urllib.urlopen(link).read(), 'gbk')
+
+    logging.debug("Fetched %s, type %s" % (link, type(text)))
     # logging.debug(text)
 
-    pattern = area.encode("gbk")
-    match = re.search(pattern, text)
+    addr = area    
+    for sub in locations[area]:
+        match = re.search(sub, text)
+        if match:
+            addr = addr + sub
+            break
 
-    if match:
-        logging.debug(match.group(0))
+    logging.debug("addr -> %s" % addr)
 
-    q = {
-        "address": area.encode("utf-8")
-    }
-
+    q = {"address": addr.encode("utf-8")}
     map_api = "http://api.map.baidu.com/geocoder/v2/?output=json&ak=%s&%s" % (MAP_KEY, urlencode(q))
     response = urllib.urlopen(map_api).read()    
-    logging.debug("Query %s" % map_api + ":" + response)
 
-    addr = area
     location = None
     if response:
         response = json.loads(response)
@@ -60,7 +60,7 @@ def find_detail_loc(link, area):
 
     return addr, location
 
-def save_news(entries):
+def _save_news(entries):
     if not entries:
         return
     try:
@@ -81,7 +81,7 @@ def save_news(entries):
         if con:
             con.disconnect()
 
-def crawl_news(area):
+def _crawl_news(area):
     logging.debug("crawler")
     logging.info("crawler")
     entries = []
@@ -98,7 +98,7 @@ def crawl_news(area):
 
     for entry in ret.entries:
         try:
-            addr, location = find_detail_loc(entry.link, area)
+            addr, location = _find_location(entry.link, area)
 
             entries.append({
                 "_id": entry.link,
@@ -107,10 +107,10 @@ def crawl_news(area):
                 "addr": addr,
                 "loc": location
             })
-        except:
+        except Exception:
             logging.exception("ERROR when crawl %s" % entry.link)
 
-    save_news(entries)    
+    _save_news(entries)    
 
 class CrawlerHandler(tornado.web.RequestHandler):
     def get(self):
@@ -118,8 +118,8 @@ class CrawlerHandler(tornado.web.RequestHandler):
 
     def post(self):
         for loc in locations:
-            crawl_news(loc)
+            _crawl_news(loc)
 
 if __name__ == "__main__":
-    crawl_news(u"北京")
-    crawl_news(u"河北")
+    _crawl_news(u"北京")
+    _crawl_news(u"河北")
