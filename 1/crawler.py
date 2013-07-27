@@ -105,23 +105,13 @@ class CrawlerHandler(tornado.web.RequestHandler):
 
         for entry in ret.entries:
             try:
-                text = self._fetch_url(entry.link)
-                if text:
-                    addr, location = _find_location(text, area)
-
-                    entries.append({
-                        "_id": entry.link,
-                        "title": entry.title,
-                        "description": entry.description,
-                        "addr": addr,
-                        "loc": location
-                    })
+                self._fetch_url(entry.link, area)                    
             except Exception:
                 logging.exception("ERROR when crawl %s" % entry.link)
 
         _save_news(entries)   
 
-    def _fetch_url(self, url):
+    def _fetch_url(self, url, area):
         self.write("Fetching %s" % url)
         # text = unicode(urllib.urlopen(url).read(), 'gbk')
         # logging.debug("Fetched %s" % url)
@@ -132,7 +122,7 @@ class CrawlerHandler(tornado.web.RequestHandler):
         q = BaeTaskQueue("crawler_queue")
 
         ### 推入预执行的task
-        qid = q.push(url = url)['response_params']['task_id']
+        qid = q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback?area="+area)['response_params']['task_id']
 
         ### 查看task的执行信息
         # logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
@@ -155,7 +145,17 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
         try:
             q = BaeTaskQueue("crawler_queue")
             task_id = int(self.get_argument("task_id"))
-            logging.debug("TaskInfo %d: %s" % (task_id, repr(q.getTaskInfo(task_id))))
+            task_info = q.getTaskInfo(task_id)
+            text = task_info["response_params"]["result_data"]
+            addr, location = _find_location(text, area)
+
+            entries.append({
+                "_id": entry.link,
+                "title": entry.title,
+                "description": entry.description,
+                "addr": addr,
+                "loc": location
+            })
         except Exception:
             logging.exception("callback error")
 
