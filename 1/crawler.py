@@ -1,3 +1,4 @@
+import tornado.web
 
 class CrawlerHandler(tornado.web.RequestHandler):
     def get(self):
