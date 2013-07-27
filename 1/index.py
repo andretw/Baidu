@@ -19,6 +19,11 @@ class ApiHandler(tornado.web.RequestHandler):
         lat2 = self.get_argument("lat2", None)
         lng2 = self.get_argument("lng2", None)
 
+        self.write("lat1="+lat1)
+        self.write("lng1="+lng1)
+        self.write("lat2="+lat2)
+        self.write("lng2="+lng2)
+        
         try:
             self._logger.info("(%s, %s) - (%s, %s)" % (lng1, lat1, lng2, lat2))
         except Exception as ex:
