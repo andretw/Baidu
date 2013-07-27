@@ -2,7 +2,6 @@
 
 from bae.core import const
 from bae.api import logging
-from bae.api.taskqueue import BaeTaskQueueManager
 from bae.api.taskqueue import BaeTaskQueue
 
 import re
@@ -15,25 +14,11 @@ import pymongo
 
 import feedparser
 from loc import locations
+import dao
 
 MAP_KEY = "AD07295d48aebd5c11b10c539cd1090b"
 
 BAIDU_SEARCH_URL = "http://www.baidu.com/baidu"
-
-def _build_geo_index():
-    con = None
-    try:
-        db_name = 'ZwgmbiQSlqOsjZWOKIOJ'
-        con = pymongo.Connection(host = const.MONGO_HOST, port = int(const.MONGO_PORT))
-        db = con[db_name]
-        db.news.create_index([("loc", pymongo.GEO2D)])
-    except:
-        logging.exception('ERROR fail to create geo index')
-    finally:
-        if con:
-            con.disconnect()
-
-# _build_geo_index()
 
 def _find_location(text, area):
     addr = area    
@@ -78,89 +63,100 @@ def _save_news(entries):
 
 
 class CrawlerHandler(tornado.web.RequestHandler):
+    def initialize(self):
+        self._logger = logging.get_logger("crawler")
+
     def get(self):
         self.post()
 
     def post(self):
-        for loc in [ u"北京", u"河北" ]:
-            self._crawl_news(loc)
+        for area in [ u"北京", u"河北" ]:
+            self._crawl_news(area)
 
     def _crawl_news(self, area):
-        logging.debug("crawler")
-        logging.info("crawler")
-        entries = []
         try:
             area_query = quote(area.encode('gbk'))
             rss_url = "http://news.baidu.com/ns?word="+ area_query +"%2B%CE%DB%C8%BE&tn=newsrss&sr=0&cl=2&rn=20&ct=0"
-            logging.debug("rss_url: " + rss_url)
+            self._logger.debug("rss_url: " + rss_url)
             ret = feedparser.parse(rss_url) 
 
-            logging.debug("Found %d entries" % len(ret.entries))
+            self._logger.debug("Found %d entries" % len(ret.entries))
             self.write("Found %d entries for %s" % (len(ret.entries),area))
+
+            self._save_news(area, ret.entries)   
         except:
-            logging.exception('ERROR when reading rss')
+            self._logger.exception('ERROR when reading rss')
             return
 
         for entry in ret.entries:
             try:
                 self._fetch_url(entry.link, area)                    
             except Exception:
-                logging.exception("ERROR when crawl %s" % entry.link)
+                self._logger.exception("ERROR when crawl %s" % entry.link)
 
-        _save_news(entries)   
+    def _save_news(self, area, entries):
+        if not entries:
+            return
 
-    def _fetch_url(self, url, area):
-        self.write("Fetching %s" % url)
-        # text = unicode(urllib.urlopen(url).read(), 'gbk')
-        # logging.debug("Fetched %s" % url)
-        # logging.debug(text)
+        saved_news = []
+        for entry in entries:
+            saved_news.append({
+                "_id": entry.link,
+                "title": entry.title,
+                "description": entry.description,
+                "area": area
+            })
 
-        # tqmgr = BaeTaskQueueManager.getInstance()
+        def _save_entries(db):
+            db.news.insert(saved_news)
+            self._logger.debug("Saved %d documents" % len(saved_news))
 
+        dao.db_action(_save_entries)
+
+    def _fetch_url(self, url):
         q = BaeTaskQueue("crawler_queue")
-
-        ### 推入预执行的task
-        task = q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback?area="+area, area = area)
-
-        ### 查看task的执行信息
-        # logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
-
-        ### 查看当前queue的信息
-        # q.query()
-
-        ### 查询用户所有的queue信息
-        # tqmgr.getList()
-
+        q.push(url = url, callback_url = "http://ecomap.duapp.com/crawler/callback")
 
 class CrawlerCallbackHandler(tornado.web.RequestHandler):
 
+    def initialize(self):
+        self._logger = logging.get_logger("crawler_callback")
+
     def get(self):
-        logging.info("Crawler GET callback: %s" % self.request.query)
+        self._logger.info("Crawler GET callback: %s" % self.request.query)
 
     def post(self):
         try:
-            q = BaeTaskQueue("crawler_queue")
             task_id = int(self.get_argument("task_id"))
-            logging.info("Crawler POST callback: %s" % task_id)
-            area = self.get_argument("area")
+            self._logger.info("Crawler POST callback: %s" % task_id)
+
+            q = BaeTaskQueue("crawler_queue")
             task_info = q.getTaskInfo(task_id)
             response_params = task_info["response_params"]
-            text = response_params.pop("result_data")
-            logging.debug("response_params[%s] = %s" % (task_id, repr(response_params)))
+            url = response_params["task_desc"]["url"]
+            self._logger.debug("response_params[%s] = %s" % (task_id, repr(response_params)))
 
-            # addr, location = _find_location(text, area)
+            def _get_doc(db):
+                return db.find_one({"_id":url})
 
-            # logging.debug("Found addr %s in %s" % (addr))
+            doc = dao.db_action(_get_doc)
 
-            # entries.append({
-            #     "_id": entry.link,
-            #     "title": entry.title,
-            #     "description": entry.description,
-            #     "addr": addr,
-            #     "loc": location
-            # })
+            if doc:
+                area = doc.get("area")
+                text = response_params.pop("result_data")
+
+                addr, location = _find_location(text, area)
+                self._logger.debug("Found addr %s in %s" % (addr, url))
+
+                def _update_doc(db):
+                    db.update({"_id":url}, {"$set":{"addr":addr, "loc":location}})
+                    self._logger.info("Update %s with addr %s, loc %s" % (url, addr, location))
+                dao.db_action(_update_doc)
+            else:
+                self._logger.error("Cannot found url "+url)
+
         except Exception:
-            logging.exception("callback error")
+            self._logger.exception("callback error")
 
 if __name__ == "__main__":
     _crawl_news(u"北京")
