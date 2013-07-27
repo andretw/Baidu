@@ -12,6 +12,8 @@ from urllib import quote, urlencode
 import tornado.web
 import pymongo
 
+from urllib import quote
+
 import feedparser
 from loc import locations
 import dao
@@ -21,12 +23,10 @@ MAP_KEY = "AD07295d48aebd5c11b10c539cd1090b"
 BAIDU_SEARCH_URL = "http://www.baidu.com/baidu"
 
 def _find_location(text, area, _logger):
-    _logger.debug(text[900:1000])
-    text = text.encode("utf-8")
-    _logger.debug(text[900:1000])
+    _logger.debug(text[1000:1100])
     addr = area    
     for sub in locations[area]:
-        match = re.search(sub.encode("utf-8"), text)
+        match = re.search(quote(sub), text)
         if match:
             addr = addr + sub
             break
