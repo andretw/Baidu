@@ -1,5 +1,5 @@
 import tornado.wsgi
-import logging
+from bae.api import logging
 
 from crawler import CrawlerHandler, CrawlerCallbackHandler
  
