@@ -145,10 +145,8 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
             area = self.get_argument("area")
             task_info = q.getTaskInfo(task_id)
             response_params = task_info["response_params"]
-            for _i in response_params:
-                if _i != "result_data":
-                    logging.debug("response_params[%s] = %s" % (_i, repr(response_params[_i])))
-            text = response_params["result_data"]
+            text = response_params.pop("result_data")
+            logging.debug("response_params[%s] = %s" % (task_id, repr(response_params)))
 
             # addr, location = _find_location(text, area)
 
