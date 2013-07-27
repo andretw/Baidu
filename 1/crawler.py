@@ -15,19 +15,17 @@ def crawl_news():
         db_name = 'ecomap'
         con = pymongo.Connection(host = const.MONGO_HOST, port = int(const.MONGO_PORT))
         db = con[db_name]
-        db.authenticate(const.MONGO_USER, const.MONGO_PASS)
+
+        logging.debug("MONGO %s / %s" % (const.MONGO_USER, const.MONGO_PASS))
+
+        if const.MONGO_USER:
+            db.authenticate(const.MONGO_USER, const.MONGO_PASS)
         news = db.news
 
-        # print ret.feed    
         for entry in ret.entries:
-            print 20*"-"
-            print entry.title
-            print entry.link
-            print entry.description
-
             news.insert({
+                "_id": entry.link,
                 "title": entry.title,
-                "link": entry.link,
                 "description": entry.description
             })
     except:
