@@ -18,11 +18,6 @@ class ApiHandler(tornado.web.RequestHandler):
         lng1 = self.get_argument("lng1", None)
         lat2 = self.get_argument("lat2", None)
         lng2 = self.get_argument("lng2", None)
-
-        self.write("lat1="+lat1)
-        self.write("lng1="+lng1)
-        self.write("lat2="+lat2)
-        self.write("lng2="+lng2)
         
         def _func(db):
             criteria = None
