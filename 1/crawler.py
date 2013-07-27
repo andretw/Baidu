@@ -16,6 +16,7 @@ from urllib import quote
 
 import feedparser
 from loc import locations
+from keywords import keywords
 import dao
 
 MAP_KEY = "AD07295d48aebd5c11b10c539cd1090b"
@@ -44,24 +45,24 @@ def _find_location(text, area, _logger):
     return addr, location
 
 def _crawl_news(area, _logger):
-    try:
-        area_query = quote(area.encode('gbk'))
-        rss_url = "http://news.baidu.com/ns?word="+ area_query +"%2B%CE%DB%C8%BE&tn=newsrss&sr=0&cl=2&rn=20&ct=0"
-        _logger.debug("rss_url: " + rss_url)
-        ret = feedparser.parse(rss_url) 
-
-        _logger.debug("Found %d entries" % len(ret.entries))
-
-        _save_news(area, ret.entries, _logger)   
-    except:
-        _logger.exception('ERROR when reading rss')
-        return
-
-    for entry in ret.entries:
+    for keyword in keywords:
         try:
-            _fetch_url(entry.link)
-        except Exception:
-            _logger.exception("ERROR when crawl %s" % entry.link)
+            query= quote(area.encode('gbk') + "+" + keyword.encode("gbk"))
+            rss_url = "http://news.baidu.com/ns?word="+ query + "&tn=newsrss&sr=0&cl=2&rn=20&ct=0"
+            _logger.debug("rss_url: " + rss_url)
+            ret = feedparser.parse(rss_url) 
+
+            _logger.debug("Found %d entries" % len(ret.entries))
+        except:
+            _logger.exception('ERROR when reading rss')
+        else:
+            _save_news(area, ret.entries, _logger)
+            
+            for entry in ret.entries:
+                try:
+                    _fetch_url(entry.link)
+                except Exception:
+                    _logger.exception("ERROR when crawl %s" % entry.link)
 
 def _save_news(area, entries, _logger):
     if not entries:
@@ -157,6 +158,6 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
             self._logger.exception("callback error")
 
 if __name__ == "__main__":
-    text = urllib.urlopen("http://www.chinanews.com/df/2013/07-25/5084700.shtml").read()
-    addr, location = _find_location(text, u"河北")
+    text = unicode(urllib.urlopen("http://www.chinanews.com/df/2013/07-25/5084700.shtml").read(), "gbk")
+    addr, location = _find_location(text, u"河北", logging.getLogger("root"))
     print addr
