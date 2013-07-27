@@ -64,7 +64,7 @@ def _save_news(entries):
 
 class CrawlerHandler(tornado.web.RequestHandler):
     def initialize(self):
-        self._logger = logging.get_logger("crawler")
+        self._logger = logging.getLogger("crawler")
 
     def get(self):
         self.post()
@@ -120,7 +120,7 @@ class CrawlerHandler(tornado.web.RequestHandler):
 class CrawlerCallbackHandler(tornado.web.RequestHandler):
 
     def initialize(self):
-        self._logger = logging.get_logger("crawler_callback")
+        self._logger = logging.getLogger("crawler_callback")
 
     def get(self):
         self._logger.info("Crawler GET callback: %s" % self.request.query)
