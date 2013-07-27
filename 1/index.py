@@ -43,7 +43,9 @@ class ApiHandler(tornado.web.RequestHandler):
             for doc in cursor:
                 self._logger.debug("Found doc: %s" % type(doc.get("title")))
                 # self._logger.info("Found doc %s" % repr(doc))
-                news_list.append(doc)
+                news_list.append({
+                     "title": doc.get("title").encode("utf-8")
+                })
 
             self.set_header("Content-Type", "application/json; charset=UTF-8")
             self.write(json.dumps(news_list))
