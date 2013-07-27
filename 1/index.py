@@ -44,7 +44,7 @@ class ApiHandler(tornado.web.RequestHandler):
                 news_list.append(doc)
 
             self.set_header("Content-Type", "application/json")
-            self.write(repr(news_list))
+            self.write(news_list)
 
         dao.db_action(_func)
 
