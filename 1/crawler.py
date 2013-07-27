@@ -79,6 +79,7 @@ def _save_news(entries):
             con.disconnect()
 
 def _fetch_url(url):
+    pass
     # text = unicode(urllib.urlopen(url).read(), 'gbk')
     # logging.debug("Fetched %s" % url)
     # logging.debug(text)
