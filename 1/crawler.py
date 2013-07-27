@@ -85,10 +85,10 @@ def _fetch_url(url):
 
     # tqmgr = BaeTaskQueueManager.getInstance()
 
-    q = BaeTaskQueue("crawler_queue")
+    # q = BaeTaskQueue("crawler_queue")
 
     ### 推入预执行的task
-    qid = q.push(url = url)['response_params']['task_id']
+    # qid = q.push(url = url)['response_params']['task_id']
 
     ### 查看task的执行信息
     # logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
