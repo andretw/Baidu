@@ -90,7 +90,7 @@ class CrawlerHandler(tornado.web.RequestHandler):
 
         for entry in ret.entries:
             try:
-                self._fetch_url(entry.link, area)                    
+                self._fetch_url(entry.link)
             except Exception:
                 self._logger.exception("ERROR when crawl %s" % entry.link)
 
