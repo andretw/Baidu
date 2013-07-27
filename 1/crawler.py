@@ -131,6 +131,8 @@ def _crawl_news(area):
         except Exception:
             logging.exception("ERROR when crawl %s" % entry.link)
 
+    self.write(ret)
+            
     _save_news(entries)    
 
 class CrawlerHandler(tornado.web.RequestHandler):
