@@ -134,7 +134,7 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
                 self._logger.debug("Found addr %s in %s" % (addr, url))
 
                 def _update_doc(db):
-                    db.update({"_id":url}, {"$set":{"addr":addr, "loc":location}})
+                    db.news.update({"_id":url}, {"$set":{"addr":addr, "loc":location}})
                     self._logger.info("Update %s with addr %s, loc %s" % (url, addr, location))
                 dao.db_action(_update_doc)
             else:
