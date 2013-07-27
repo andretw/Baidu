@@ -79,17 +79,16 @@ def _save_news(entries):
             con.disconnect()
 
 def _fetch_url(url):
-    pass
     # text = unicode(urllib.urlopen(url).read(), 'gbk')
     # logging.debug("Fetched %s" % url)
     # logging.debug(text)
 
     # tqmgr = BaeTaskQueueManager.getInstance()
 
-    # q = BaeTaskQueue("crawler_queue")
+    q = BaeTaskQueue("crawler_queue")
 
     ### 推入预执行的task
-    # qid = q.push(url = url)['response_params']['task_id']
+    qid = q.push(url = url)['response_params']['task_id']
 
     ### 查看task的执行信息
     # logging.debug("QUEUE: %s" + repr(q.getTaskInfo(qid)))
@@ -131,8 +130,6 @@ def _crawl_news(area):
         except Exception:
             logging.exception("ERROR when crawl %s" % entry.link)
 
-    self.write(ret)
-            
     _save_news(entries)    
 
 class CrawlerHandler(tornado.web.RequestHandler):
@@ -140,7 +137,7 @@ class CrawlerHandler(tornado.web.RequestHandler):
         self.post()
 
     def post(self):
-        for loc in locations:
+        for loc in [ u"北京", u"河北" ]:
             _crawl_news(loc)
 
 class CrawlerCallbackHandler(tornado.web.RequestHandler):
