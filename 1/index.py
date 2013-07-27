@@ -32,8 +32,8 @@ class ApiHandler(tornado.web.RequestHandler):
 
         def _func(db):
             criteria = None
-            if lat1 is not None and lng1 is not None and lat2 is not None and lng2 is not None:
-                criteria = {
+            # if lat1 is not None and lng1 is not None and lat2 is not None and lng2 is not None:
+            criteria = {
                     "loc": {
                         "$within": {
                             "$box":[
