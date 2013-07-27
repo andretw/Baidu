@@ -23,7 +23,7 @@ BAIDU_SEARCH_URL = "http://www.baidu.com/baidu"
 def _find_location(text, area, _logger):
     addr = area    
     for sub in locations[area]:
-        match = re.search(unicode(sub,"gbk"), text)
+        match = re.search(sub, text)
         if match:
             addr = addr + sub
             break
