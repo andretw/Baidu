@@ -6,7 +6,7 @@ import pymongo
 def build_geo_index():
     def _func(db):
         db.news.create_index([("loc", pymongo.GEO2D)])
-    db_action(build_geo_index)
+    db_action(_func)
 
 def db_action(func):
     try:
