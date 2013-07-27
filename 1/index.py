@@ -1,3 +1,5 @@
+import json
+
 import tornado.wsgi
 from bae.api import logging
 
@@ -44,7 +46,7 @@ class ApiHandler(tornado.web.RequestHandler):
                 news_list.append(doc)
 
             self.set_header("Content-Type", "application/json")
-            self.write(news_list)
+            self.write(json.dumps(news_list))
 
         dao.db_action(_func)
 
