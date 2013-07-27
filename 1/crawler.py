@@ -139,11 +139,11 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
 
                 try:
                     addr, location = _find_location(text, area)
-                    self._logger.debug("Found addr %s in %s" % (addr, url))
+                    # self._logger.debug("Found addr %s in %s" % (addr, url))
 
                     def _update_doc(db):
                         db.news.update({"_id":url}, {"$set":{"addr":addr, "loc":location}})
-                        self._logger.info("Update %s with addr %s, loc %s" % (url, addr, location))
+                        # self._logger.info("Update %s with addr %s, loc %s" % (url, addr, location))
                     dao.db_action(_update_doc)
                 except Exception:
                     self._logger.exception("Fail to analyze address for "+url)
