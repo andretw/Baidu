@@ -135,8 +135,11 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
             q = BaeTaskQueue("crawler_queue")
             task_info = q.getTaskInfo(task_id)
             response_params = task_info["response_params"]
+            text = response_params.pop("result_data")
             self._logger.debug("response_params[%s] = %s" % (task_id, repr(response_params)))
-            url = response_params["task_desc"]["url"]
+            task_desc = response_params["task_desc"]
+            task_desc = json.loads(task_desc)
+            url = task_desc["url"]
 
             def _get_doc(db):
                 return db.find_one({"_id":url})
@@ -145,7 +148,6 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
 
             if doc:
                 area = doc.get("area")
-                text = response_params.pop("result_data")
 
                 addr, location = _find_location(text, area)
                 self._logger.debug("Found addr %s in %s" % (addr, url))
