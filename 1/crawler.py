@@ -21,9 +21,10 @@ MAP_KEY = "AD07295d48aebd5c11b10c539cd1090b"
 BAIDU_SEARCH_URL = "http://www.baidu.com/baidu"
 
 def _find_location(text, area):
+    text = unicode(text, "gbk")
     addr = area    
     for sub in locations[area]:
-        match = re.search(sub.encode("utf-8"), text)
+        match = re.search(sub, text)
         if match:
             addr = addr + sub
             break
@@ -154,4 +155,6 @@ class CrawlerCallbackHandler(tornado.web.RequestHandler):
             self._logger.exception("callback error")
 
 if __name__ == "__main__":
-    _crawl_news(u"北京", logging.getLogger("main"))
+    text = urllib.urlopen("http://www.chinanews.com/df/2013/07-25/5084700.shtml").read()
+    addr, location = _find_location(text, u"河北")
+    print addr
