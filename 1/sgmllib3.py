@@ -478,13 +478,13 @@ class TestSGMLParser(SGMLParser):
 
     def unknown_starttag(self, tag, attrs):
         self.flush()
-        if not attrs:
-            print('start tag: <' + tag + '>')
-        else:
-            print('start tag: <' + tag, end=' ')
-            for name, value in attrs:
-                print(name + '=' + '"' + value + '"', end=' ')
-            print('>')
+        # if not attrs:
+        #     print('start tag: <' + tag + '>')
+        # else:
+        #     print('start tag: <' + tag, end=' ')
+        #     for name, value in attrs:
+        #         print(name + '=' + '"' + value + '"', end=' ')
+        #     print('>')
 
     def unknown_endtag(self, tag):
         self.flush()
