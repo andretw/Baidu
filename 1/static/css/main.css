@@ -395,9 +395,9 @@ a, a:visited, a:active, a:hover {
   border-top-color: rgba(0, 0, 0, 0.2);
   border-bottom: 0;
 }
-.baidu-content .instance-layer .detail-popup {
-  position: absolute;
-  width: 650px;
+.detail-popup-fix-detail-popup {
+  /*position: absolute;*/
+  width: 600px;
   height: 550px;
   left: 380px;
   top: 70px;
@@ -406,22 +406,22 @@ a, a:visited, a:active, a:hover {
   -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
 }
-.baidu-content .instance-layer .detail-popup .title-bar {
-  width: 650px;
+.detail-popup-fix-title-bar {
+  width: 600px;
   height: 80px;
   -webkit-box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 5px;
   -moz-box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 5px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 5px;
 }
-.baidu-content .instance-layer .detail-popup .title-bar .title {
-  width: 480px;
+.detail-popup-fix-title {
+  width: 440px;
   height: 80px;
   line-height: 80px;
   font-size: 24px;
   padding-left: 20px;
   float: left;
 }
-.baidu-content .instance-layer .detail-popup .positive {
+.detail-popup-fix-positive {
   float: right;
   display: inline-block;
   margin-right: 20px;
@@ -431,7 +431,7 @@ a, a:visited, a:active, a:hover {
   color: #69b407;
   cursor: pointer;
 }
-.baidu-content .instance-layer .detail-popup .negative {
+.detail-popup-fix-negative {
   float: right;
   display: inline-block;
   margin-right: 20px;
@@ -441,7 +441,7 @@ a, a:visited, a:active, a:hover {
   color: #ff4605;
   cursor: pointer;
 }
-.baidu-content .instance-layer .detail-popup .write-comment {
+.detail-popup-fix-write-comment {
   float: right;
   display: inline-block;
   margin-right: 20px;
@@ -451,7 +451,7 @@ a, a:visited, a:active, a:hover {
   color: #ccc;
   cursor: pointer;
 }
-.baidu-content .instance-layer .detail-popup .arrow-color-top {
+.detail-popup-fix-arrow-color-top {
   position: absolute;
   left: 320px;
   bottom: -6px;
@@ -460,7 +460,7 @@ a, a:visited, a:active, a:hover {
   border-top: 6px solid #fff;
   border-bottom: 0;
 }
-.baidu-content .instance-layer .detail-popup .arrow-color-bottom {
+.detail-popup-fix-arrow-color-bottom {
   position: absolute;
   left: 318px;
   bottom: -8px;
@@ -470,17 +470,17 @@ a, a:visited, a:active, a:hover {
   border-top-color: rgba(0, 0, 0, 0.2);
   border-bottom: 0;
 }
-.baidu-content .instance-layer .detail-popup .detail-content {
+.detail-popup-fix-detail-content {
   width: 600px;
   height: 445px;
-  margin: 0 25px 0 25px;
+  /*margin: 0 25px 0 25px;*/
   overflow-x: hidden;
 }
-.baidu-content .instance-layer .detail-popup .detail-content .news {
+.detail-popup-fix-news {
   height: 200px;
   background-color: #eee;
 }
-.baidu-content .instance-layer .detail-popup .detail-content .user-comment-title {
+.detail-popup-fix-user-comment-title {
   width: 600px;
   height: 30px;
   line-height: 30px;
@@ -488,19 +488,19 @@ a, a:visited, a:active, a:hover {
   margin-top: 10px;
   border-bottom: 1px solid #ccc;
 }
-.baidu-content .instance-layer .detail-popup .detail-content .user-comment {
+.detail-popup-fix-user-comment {
   margin-top: 20px;
 }
-.baidu-content .instance-layer .detail-popup .detail-content .user-comment .photo {
+.detail-popup-fix-photo {
   display: inline-block;
   width: 50px;
   height: 50px;
   border: 1px solid #bbb;
 }
-.baidu-content .instance-layer .detail-popup .detail-content .user-comment .photo img {
+.detail-popup-fix-photo img {
   width: 100%;
 }
-.baidu-content .instance-layer .detail-popup .detail-content .user-comment .comment {
+.detail-popup-fix-comment {
   display: inline-block;
   width: 505px;
   padding: 1px 10px 1px 0;
@@ -508,38 +508,39 @@ a, a:visited, a:active, a:hover {
   word-wrap: break-word;
   word-break: break-all;
 }
-.baidu-content .instance-layer .multi-preview-popup {
+.multi-preview-popup-fix-multi-preview-popup {
   position: absolute;
+  left:-174px;
+  top:-201px;
   width: 367px;
   height: 800px;
-  right: 0;
   background-color: #fff;
   -webkit-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
   -moz-box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
   box-shadow: rgba(0, 0, 0, 0.5) 0px 1px 5px;
   overflow-x: hidden;
 }
-.baidu-content .instance-layer .multi-preview-popup .photo {
+.multi-preview-popup-fix-photo {
   position: relative;
   width: 367px;
   height: 208px;
 }
-.baidu-content .instance-layer .multi-preview-popup .photo img {
+.multi-preview-popup-fix-photo img {
   width: 100%;
 }
-.baidu-content .instance-layer .multi-preview-popup .title-bar {
+.multi-preview-popup-fix-title-bar {
   width: 367px;
   height: 50px;
   background-color: #fff;
 }
-.baidu-content .instance-layer .multi-preview-popup .title-bar .title {
+.multi-preview-popup-fix-title {
   display: inline-block;
   width: 240px;
   height: 50px;
   line-height: 50px;
   padding-left: 10px;
 }
-.baidu-content .instance-layer .multi-preview-popup .title-bar .positive {
+.multi-preview-popup-fix-positive {
   float: right;
   display: inline-block;
   margin-right: 15px;
@@ -549,7 +550,7 @@ a, a:visited, a:active, a:hover {
   color: #69b407;
   cursor: pointer;
 }
-.baidu-content .instance-layer .multi-preview-popup .title-bar .negative {
+.multi-preview-popup-fix-negative {
   float: right;
   display: inline-block;
   margin-right: 20px;
@@ -559,7 +560,7 @@ a, a:visited, a:active, a:hover {
   color: #ff4605;
   cursor: pointer;
 }
-.baidu-content .instance-layer .multi-preview-popup .summary {
+.multi-preview-popup-fix-summary {
   width: 347px;
   padding: 0 10px 10px 10px;
   color: #999;
